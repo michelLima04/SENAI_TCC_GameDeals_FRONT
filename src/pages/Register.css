@@ -1,0 +1,231 @@
+/* Importações e variáveis - mantendo consistência */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+:root {
+    --primary: hsl(189, 100%, 50%);
+    --secondary: hsl(189, 100%, 50%);
+    --dark-bg: #0a0c10;
+    --dark-secondary: #11161d;
+    --text-light: #ffffff;
+    --text-gray: #a0a0a0;
+    --error: #ff5555;
+    --success: #00ff88;
+}
+
+/* Estilos base - reaproveitando o layout do login */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #33005d, #110039, #000000);
+    background-attachment: fixed;
+    padding: 1rem;
+}
+
+.register-card {
+    background: var(--dark-secondary);
+    border: 1px solid rgba(0, 216, 255, 0.3);
+    border-radius: 12px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow:
+        0 0 20px rgba(0, 216, 255, 0.1),
+        0 0 40px rgba(0, 216, 255, 0.05);
+    animation: glow 3s infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px rgba(0, 216, 255, 0.1);
+    }
+
+    to {
+        box-shadow: 0 0 20px rgba(0, 216, 255, 0.3);
+    }
+}
+
+/* Header personalizado */
+.register-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.register-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.register-subtitle {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+/* Formulário - ajustes para mais campos */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    /* Espaçamento menor para mais campos */
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.register-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(10, 12, 16, 0.7);
+    border: 1px solid rgba(0, 216, 255, 0.3);
+    border-radius: 6px;
+    color: var(--text-light);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.register-input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow:
+        0 0 0 2px rgba(0, 216, 255, 0.2),
+        0 0 15px rgba(0, 216, 255, 0.1);
+}
+
+/* Password toggle - reaproveitado do login */
+.password-input-container {
+    position: relative;
+}
+
+.show-password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.toggle-label {
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    user-select: none;
+    transition: all 0.3s;
+}
+
+.toggle-label:hover {
+    transform: scale(1.1);
+}
+
+/* Botão principal */
+.register-button {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary);
+    color: var(--dark-bg);
+    border: none;
+    border-radius: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+    text-transform: uppercase;
+}
+
+.register-button:hover {
+    background: #00c4e6;
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 12px rgba(0, 216, 255, 0.3),
+        0 0 10px rgba(0, 216, 255, 0.1);
+}
+
+.register-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Mensagens e footer */
+.register-message {
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+}
+
+.register-message.success {
+    color: var(--success);
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.register-message.error {
+    color: var(--error);
+    background: rgba(255, 85, 85, 0.1);
+    border: 1px solid rgba(255, 85, 85, 0.3);
+}
+
+.register-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+}
+
+.register-link {
+    color: var(--primary);
+    /* Mantém a cor ciano do tema */
+    text-decoration: none;
+    margin-left: 0.5rem;
+    transition: all 0.3s;
+    background: transparent;
+    /* Garante que não há fundo branco */
+    border: none;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    padding: 0;
+}
+
+
+.register-link:hover {
+    color: var(--primary);
+    text-shadow: 0 0 8px rgba(0, 216, 255, 0.5);
+    transform: scale(1.05);
+    /* Efeito sutil de hover */
+}
+
+.register-text {
+    color: var(--text-light);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .register-card {
+        padding: 1.5rem;
+    }
+
+    .register-title {
+        font-size: 1.5rem;
+    }
+}

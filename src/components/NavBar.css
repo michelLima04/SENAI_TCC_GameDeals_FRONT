@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+:root {
+  --primary: hsl(189, 100%, 50%);
+  --secondary: hsl(189, 100%, 50%);
+  --dark-bg: #0a0c10;
+  --dark-secondary: #11161d;
+  --text-light: #ffffff;
+  --text-gray: #a0a0a0;
+}
+
+/* Reset e Base */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--dark-bg);
+  padding: 0.5rem 1rem;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 100;
+  border-bottom: 1px solid rgba(0, 216, 255, 0.1);
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s;
+}
+
+.logo-link:hover {
+  transform: scale(1.02);
+}
+
+.logo-icon {
+  color: var(--primary);
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.gradient-logo {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Barra de Busca */
+.search-bar {
+  flex: 0 1 800px;
+  display: flex;
+  align-items: center;
+  background: var(--dark-secondary);
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  margin-left: -4rem;
+  transition: all 0.3s;
+  border: 1px solid transparent;
+}
+
+.search-bar.focused {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 216, 255, 0.2);
+}
+
+.search-bar input {
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  margin-left: 0.5rem;
+  flex: 1;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.search-bar input::placeholder {
+  color: var(--text-gray);
+}
+
+.search-icon {
+  color: var(--text-gray);
+  font-size: 1rem;
+}
+
+.clear-search {
+  background: transparent;
+  border: none;
+  color: var(--text-gray);
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: color 0.2s;
+}
+
+.clear-search:hover {
+  color: var(--text-light);
+}
+
+/* Botões */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.publish-btn {
+  background: var(--primary);
+  color: var(--dark-bg);
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-right: 5rem;
+  margin-left: 3rem;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.publish-btn:hover {
+  background: #00c4e6;
+  transform: translateY(-1px);
+}
+
+.btn-text {
+  white-space: nowrap;
+}
+
+.profile-btn {
+  background: transparent;
+  border: 2px solid var(--dark-secondary);
+  border-radius: 50%;
+  padding: 0.5rem;
+  color: var(--primary);
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: grid;
+  place-items: center;
+  margin-right: 7rem;
+}
+
+.profile-btn:hover {
+  border-color: var(--primary);
+  transform: scale(1.1);
+  background: rgba(0, 216, 255, 0.1);
+}
+
+/* Profile Panel */
+.profile-container {
+  position: relative;
+}
+
+.profile-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  background: var(--dark-secondary);
+  border-radius: 0.5rem;
+  width: 220px;
+  padding: 0.5rem 0;
+  z-index: 1000;
+  border: 1px solid rgba(0, 216, 255, 0.1);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.2s ease-out;
+  margin-right: 0;
+  margin-top: 0.6rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-header {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 216, 255, 0.1);
+  margin-bottom: 0.25rem;
+}
+
+.profile-header span {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  background: linear-gradient(90deg, var(--primary), var(--text-light));
+  background-clip: text;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+  -webkit-text-fill-color: transparent;
+}
+
+.profile-panel-item {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-light);
+  text-decoration: none;
+  background: none;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.profile-panel-item:hover {
+  background: rgba(0, 216, 255, 0.1);
+  border-left-color: var(--primary);
+  color: var(--primary);
+}
+
+.profile-panel-item svg {
+  font-size: 1rem;
+  color: var(--text-gray);
+  transition: all 0.2s;
+}
+
+.profile-panel-item:hover svg {
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .navbar {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .search-bar {
+    flex: 1 1 100%;
+    order: 3;
+    margin: 0.5rem 0;
+    max-width: 100%;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .publish-btn {
+    padding: 0.5rem;
+    border-radius: 50%;
+  }
+
+  .profile-container {
+    margin-right: 1rem;
+  }
+
+  .profile-panel {
+    width: 180px;
+    right: -0.5rem;
+  }
+}
+
+/* Added for logo link */
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-link:hover {
+  opacity: 0.8;
+}
