@@ -3,10 +3,14 @@ import './Publish.css';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../components/Navbar';
 import { FiImage } from 'react-icons/fi';
+import api from '../services/api';
+
+
 
 export function Publish() {
     const [url, setUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingConfirm, setIsLoadingConfirm] = useState(false);
     const [message, setMessage] = useState('');
     const [showProductDetails, setShowProductDetails] = useState(false);
     const [productDetails, setProductDetails] = useState({
@@ -14,33 +18,52 @@ export function Publish() {
         site: '',
         price: '',
         coupon: '',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Preview+do+Produto'
+        imageUrl: 'https://localhost:7101/images/image-not-found.png',
+        url: '',
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
 
-        setTimeout(() => {
             if (url && isValidUrl(url)) {
-                const domain = new URL(url).hostname
-                    .replace('www.', '')
-                    .replace('.com', '')
-                    .replace('.com.br', '')
-                    .replace('.net', '')
-                    .replace('.org', '');
+               try {
+                    const token = localStorage.getItem("jwtToken");
+                    
+                    const response = await api.post("/Promocao/Cadastrar", {
+                        urlPromocao: url,
+                        cupom: '',
+                        isAdd: false,
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    
+                    const { promocao } = response.data as any;
+                    const { cupom, imagemUrl, preco, titulo, site } = promocao;
 
-                setProductDetails({
-                    ...productDetails,
-                    site: domain
-                });
-                setMessage('');
-                setShowProductDetails(true);
+
+                    setProductDetails({
+                        coupon: cupom,
+                        imageUrl: imagemUrl,
+                        price: preco,
+                        site,
+                        title: titulo,
+                        url
+                    });
+
+                    setMessage('');
+                    setShowProductDetails(true);
+                } catch (error) {
+                    console.error("Erro ao cadastrar promoção:", error);
+                    setMessage(error.response.data.mensagem || 'Erro ao cadastrar promoção.')
+                }
+
             } else {
                 setMessage('Por favor, insira uma URL válida');
             }
             setIsLoading(false);
-        }, 1500);
     };
 
     const handleBack = () => {
@@ -48,17 +71,43 @@ export function Publish() {
         setUrl('');
     };
 
-    const handleConfirm = () => {
-        setMessage('Produto publicado com sucesso!');
-        setShowProductDetails(false);
-        setUrl('');
-        setProductDetails({
-            title: '',
-            site: '',
-            price: '',
-            coupon: '',
-            imageUrl: 'https://via.placeholder.com/300x200?text=Preview+do+Produto'
-        });
+    const handleConfirm = async () => {
+        setIsLoadingConfirm(true);
+
+         try {
+            const token = localStorage.getItem("jwtToken");
+            
+            const response = await api.post("/Promocao/Cadastrar", {
+                urlPromocao: url,
+                cupom: '',
+                isAdd: true,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+
+            setMessage('Produto publicado com sucesso!');
+            setShowProductDetails(false);
+
+            setUrl('');
+            setProductDetails({
+                title: '',
+                site: '',
+                price: '',
+                coupon: '',
+                imageUrl: 'image',
+                url: ''
+            });
+        } catch (error) {
+            console.error("Erro ao cadastrar promoção:", error);
+            setMessage('Erro ao cadastrar promoção!');
+
+        }
+        setIsLoadingConfirm(false);
+
+      
     };
 
     const handleDetailChange = (e) => {
@@ -79,12 +128,13 @@ export function Publish() {
     };
 
     const formatPrice = (value) => {
+
         if (!value) return 'R$ 0,00';
-        const number = parseInt(value, 10) / 100;
+
         return new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL'
-        }).format(number);
+        }).format(value);
     };
 
     const isValidUrl = (urlString) => {
@@ -132,7 +182,7 @@ export function Publish() {
                                 {isLoading ? (
                                     <span className="loading-spinner"></span>
                                 ) : (
-                                    'BUSCAR DETALHES'
+                                    'ENVIAR'
                                 )}
                             </button>
 
@@ -157,7 +207,7 @@ export function Publish() {
                                     <FiImage className="image-icon" />
                                 </div>
                                 <img 
-                                    src={productDetails.imageUrl} 
+                                    src={productDetails.imageUrl } 
                                     className="product-image"
                                     
                                 />
@@ -242,10 +292,16 @@ export function Publish() {
                                 type="button"
                                 className="publish-button"
                                 onClick={handleConfirm}
-                                disabled={!productDetails.title || !productDetails.price}
+                                disabled={!productDetails.title || !productDetails.price || isLoadingConfirm}
+
                             >
-                                CONFIRMAR PUBLICAÇÃO
+                                 {isLoadingConfirm ? (
+                                    <span className="loading-spinner"></span>
+                                ) : (
+                                    'CONFIRMAR PUBLICAÇÃO'
+                                )}
                             </button>
+                            
                         </div>
                     </div>
                 )}

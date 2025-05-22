@@ -1,43 +1,90 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
-import { FaPlus, FaUserCircle, FaSearch, FaTimes, FaSignInAlt, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaPlus, FaUserCircle, FaSearch, FaTimes, FaSignInAlt, FaUser, FaSignOutAlt, FaBell } from 'react-icons/fa';
 import { PiGameControllerDuotone } from "react-icons/pi";
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
+import { jwtDecode } from 'jwt-decode';
+
+interface JwtDecoded {
+  userName: string;
+  UserId: string;
+  role: string;
+}
 
 export function NavBar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isProfilePanelOpen, setIsProfilePanelOpen] = useState(false);
+  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('JohnDoe');
+  const [userName, setUserName] = useState('');
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      const decoded = jwtDecode<JwtDecoded>(token);
+      setIsLoggedIn(true);
+      setUserName(decoded.userName || 'John doe');
+      console.log("ID:", decoded.UserId);
+      console.log("Role:", decoded.role);
+    }
+  }, []);
 
   const toggleProfilePanel = () => {
     setIsProfilePanelOpen(!isProfilePanelOpen);
+    setIsNotificationsPanelOpen(false);
+  };
+
+  const toggleNotificationsPanel = () => {
+    setIsNotificationsPanelOpen(!isNotificationsPanelOpen);
+    setIsProfilePanelOpen(false);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setIsProfilePanelOpen(false);
-    // Adicione aqui a lógica de logout real
+
+    const token = localStorage.getItem("jwtToken");
+
+    if(token) {
+      localStorage.removeItem("jwtToken");
+
+      navigate('/?auth=0');
+    } 
+
   };
 
   const handlePublishClick = () => {
     navigate('/publish');
   };
 
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+      console.log('Buscando por:', searchQuery);
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="logo">
-        <Link to="/home" className="logo-link">
+        <Link to="/" className="logo-link">
           <PiGameControllerDuotone className="logo-icon" aria-label="Logo GameDeals" />
           <span className="gradient-logo">GameDeals</span>
         </Link>
       </div>
 
       <div className={`search-bar ${searchFocused ? 'focused' : ''}`}>
-        <FaSearch className="search-icon" />
+        <button 
+          className="search-button" 
+          onClick={handleSearch}
+          aria-label="Pesquisar"
+        >
+          <FaSearch className="search-icon" />
+        </button>
         <input 
           type="text" 
           placeholder="Buscar ofertas..." 
@@ -45,6 +92,7 @@ export function NavBar() {
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setSearchFocused(true)}
           onBlur={() => setSearchFocused(false)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSearch()} // Permite busca ao pressionar Enter
         />
         {searchQuery && (
           <button 
@@ -65,6 +113,36 @@ export function NavBar() {
         >
           <FaPlus /> <span className="btn-text">Publicar</span>
         </button>
+        
+        <div className="notifications-container">
+          <button 
+            className="notifications-btn" 
+            aria-label="Notificações"
+            onClick={toggleNotificationsPanel}
+          >
+            <FaBell />
+          </button>
+          
+          {isNotificationsPanelOpen && (
+            <div className="notifications-panel">
+              <div className="notifications-header">
+                <span>Notificações</span>
+              </div>
+              
+              {notifications.length > 0 ? (
+                <div className="notifications-list">
+                  {/* Aqui você renderizaria as notificações */}
+                  {/* {notifications.map(notification => (...))} */}
+                </div>
+              ) : (
+                <div className="no-notifications">
+                  Nada por enquanto...
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         <div className="profile-container">
           <button 
             className="profile-btn" 
@@ -79,7 +157,6 @@ export function NavBar() {
               {isLoggedIn ? (
                 <>
                   <div className="profile-header">
-                    <FaUserCircle className="profile-panel-icon" />
                     <span>Olá, {userName}!</span>
                   </div>
                   <Link to="/profile" className="profile-panel-item" onClick={() => setIsProfilePanelOpen(false)}>

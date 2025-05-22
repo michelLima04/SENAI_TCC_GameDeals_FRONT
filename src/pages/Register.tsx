@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Register.css'; // Arquivo CSS específico
+import api from '../services/api';
 
 export function Register() {
     const [fullName, setFullName] = useState('');
@@ -13,20 +14,31 @@ export function Register() {
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
-        // Simulação de cadastro
-        setTimeout(() => {
-            if (fullName && username && email && password) {
-                setMessage('Cadastro bem-sucedido! Redirecionando...');
-                setTimeout(() => navigate('/login'), 2000);
-            } else {
-                setMessage('Preencha todos os campos!');
+        if (fullName && username && email && password) {
+            setIsLoading(true);
+            try {
+                const response = await api.post('/Usuarios/Registro', {
+                    nomeSobrenome: fullName,
+                    usuarioNome: username,
+                    email: email,
+                    senha: password,
+                });
+
+                setMessage('Registro realizado com sucesso!');
+                setTimeout(() => navigate('/login'), 1500)
+            } catch (error) {
+                setMessage(error.response.data.mensagem ?? 'Erro ao registrar usuário. Tente novamente.');
+                console.error(error);
+            } finally {
+                setIsLoading(false);
             }
-            setIsLoading(false);
-        }, 1500);
+        } else {
+            setMessage('Preencha todos os campos!');
+        }
     };
 
     return (
@@ -40,6 +52,11 @@ export function Register() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="login-form">
+                {message && (
+                        <p className={`login-message ${message.includes('sucesso') ? 'success' : 'error'}`}>
+                            {message}
+                        </p>
+                    )}
                     <div className="input-group">
                         <label htmlFor="fullName">Nome Completo</label>
                         <input
@@ -109,11 +126,7 @@ export function Register() {
                         {isLoading ? 'CADASTRANDO...' : 'CRIAR CONTA'}
                     </button>
 
-                    {message && (
-                        <p className={`login-message ${message.includes('bem-sucedido') ? 'success' : 'error'}`}>
-                            {message}
-                        </p>
-                    )}
+                 
                 </form>
 
                 <div className="register-footer">

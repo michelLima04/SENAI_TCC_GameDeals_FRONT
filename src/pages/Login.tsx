@@ -1,33 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.css';
 import { useNavigate, Link } from 'react-router-dom';
 import { PiGameControllerDuotone } from 'react-icons/pi';
+import api from '../services/api';
+
+interface LoginResponse {
+    mensagem: string;
+    token: string;
+}
 
 export function Login() {
-    // Estados para login
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
-    // Estados para recuperação
     const [isRecovering, setIsRecovering] = useState(false);
     const [recoveryEmail, setRecoveryEmail] = useState('');
 
-    const handleLoginSubmit = (e: React.FormEvent) => {
+    useEffect(() => {
+        const token = localStorage.getItem("jwtToken");
+
+        if (token) {
+            navigate('/?auth=1');
+        }
+    }, [])
+
+    const handleLoginSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-
-        setTimeout(() => {
-            if (email && password) {
-                setMessage('Login bem-sucedido! (Simulação)');
-            } else {
-                setMessage('Preencha todos os campos!');
+        setMessage('');
+    
+        try {
+            const response = await api.post<LoginResponse>('/Usuarios/Login', {
+                email: email,
+                senha: password
+            });
+    
+            if (response.data.token) {
+                localStorage.setItem('jwtToken', response.data.token);
+                setMessage('Login bem-sucedido!'); 
+                setTimeout(() => navigate('/'), 1500);
             }
+        } catch (error: any) {
+            setMessage(error.response?.data?.message || 'Erro ao fazer login');
+            console.log(error)
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     const handleRecoverySubmit = (e: React.FormEvent) => {
@@ -36,7 +57,7 @@ export function Login() {
 
         setTimeout(() => {
             if (recoveryEmail) {
-                setMessage(`Link enviado para ${recoveryEmail} (Simulação)`);
+                setMessage(`Link de recuperação enviado para ${recoveryEmail}`);
             } else {
                 setMessage('Digite seu e-mail!');
             }
@@ -46,23 +67,18 @@ export function Login() {
 
     return (
         <div className="login-page-container">
-            {/* Container preto à esquerda com saudação e logo */}
             <div className="welcome-container">
                 <div className="logo">
-                    <Link to="/home" className="logo-link">
+                    <Link to="/" className="logo-link">
                         <PiGameControllerDuotone className="logo-icon" aria-label="Logo GameDeals" />
                         <span className="gradient-logo">GameDeals</span>
                     </Link>
                 </div>
-                <h2 className="welcome-text">BEM VINDO!</h2>
-                <p className="welcome-subtext">Entre para o seu novo universo, descubra as melhores promoções gamer e economize mais!</p>
             </div>
 
-            {/* Container de login à direita */}
             <div className="login-container">
                 <div className="login-card">
                     {isRecovering ? (
-                        /* MODO RECUPERAÇÃO */
                         <>
                             <div className="login-header">
                                 <h2 className="login-title">
@@ -111,15 +127,20 @@ export function Login() {
                             </form>
                         </>
                     ) : (
-                        /* MODO LOGIN NORMAL */
                         <>
                             <div className="login-header">
                                 <h2 className="login-title">
-                                    <span className="gradient-text">LOGIN</span>
+                                    <span className="gradient-text">BEM VINDO!</span>
                                 </h2>
                             </div>
 
                             <form onSubmit={handleLoginSubmit} className="login-form">
+                                {message && (
+                                    <p className={`login-message ${message.includes('bem-sucedido') || message === 'Login bem-sucedido!' ? 'success' : 'error'}`}>
+                                        {message}
+                                    </p>
+                                )}
+
                                 <div className="input-group">
                                     <label htmlFor="email">E-mail</label>
                                     <input
@@ -129,6 +150,7 @@ export function Login() {
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="seu@email.com"
                                         className="login-input"
+                                        required
                                     />
                                 </div>
 
@@ -142,6 +164,7 @@ export function Login() {
                                             onChange={(e) => setPassword(e.target.value)}
                                             placeholder="••••••••"
                                             className="login-input"
+                                            required
                                         />
                                         <div className="show-password-toggle">
                                             <input
@@ -164,36 +187,21 @@ export function Login() {
                                 >
                                     {isLoading ? 'CARREGANDO...' : 'ENTRAR'}
                                 </button>
-
-                                {message && (
-                                    <p className={`login-message ${message.includes('bem-sucedido') ? 'success' : 'error'}`}>
-                                        {message}
-                                    </p>
-                                )}
                             </form>
 
                             <div className="login-footer">
-                                <a
-                                    href="/register"
-                                    className="login-link"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        navigate('/register');
-                                    }}
-                                >
+                                <Link to="/register" className="login-link">
                                     Criar conta
-                                </a>
-                                <a
-                                    href="#"
+                                </Link>
+                                <button
                                     className="login-link"
-                                    onClick={(e) => {
-                                        e.preventDefault();
+                                    onClick={() => {
                                         setIsRecovering(true);
                                         setMessage('');
                                     }}
                                 >
                                     Esqueci a senha
-                                </a>
+                                </button>
                             </div>
                         </>
                     )}
