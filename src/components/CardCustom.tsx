@@ -36,7 +36,7 @@ export function CardCustom({
           <span 
             className="promo-likes" 
             onClick={(e) => {
-              e.stopPropagation(); // Evita clique duplo (card e like)
+              e.stopPropagation(); 
               handleLikeClick(promo.id);
             }}
           >

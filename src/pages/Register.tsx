@@ -46,7 +46,7 @@ export function Register() {
             <div className="login-card">
                 <div className="login-header">
                     <h2 className="login-title">
-                        <span className="gradient-text">CRIAR CONTA</span>
+                        <span className="gradient-text">CRIE SUA CONTA</span>
                     </h2>
                     <p className="login-subtitle">Junte-se ao nosso universo</p>
                 </div>
@@ -123,7 +123,7 @@ export function Register() {
                         className="login-button"
                         disabled={isLoading}
                     >
-                        {isLoading ? 'CADASTRANDO...' : 'CRIAR CONTA'}
+                        {isLoading ? 'CADASTRANDO...' : 'REGISTRAR'}
                     </button>
 
                  

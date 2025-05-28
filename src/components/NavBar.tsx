@@ -5,6 +5,7 @@ import { PiGameControllerDuotone } from "react-icons/pi";
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import { jwtDecode } from 'jwt-decode';
+import Modal from './Modal';
 
 interface JwtDecoded {
   userName: string;
@@ -20,6 +21,10 @@ export function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
   const [notifications, setNotifications] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isErrorMsg, setIsErrorMsg] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +63,14 @@ export function NavBar() {
   };
 
   const handlePublishClick = () => {
-    navigate('/publish');
+    if (isLoggedIn) {
+      navigate('/publish');
+    }
+
+    setIsErrorMsg("Para publicar seu achado, faça o login ou crie sua conta!");
+    setIsError(true);
+    setShowModal(true);
+
   };
 
   const handleSearch = () => {
@@ -76,6 +88,16 @@ export function NavBar() {
           <span className="gradient-logo">GameDeals</span>
         </Link>
       </div>
+
+    {isError && (
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title="Calma calabreso!"
+      >
+        <p>{isErrorMsg || "Erro interno por favor consulte o administrador."}</p>
+      </Modal>
+    )}
 
       <div className={`search-bar ${searchFocused ? 'focused' : ''}`}>
         <button 
@@ -106,13 +128,16 @@ export function NavBar() {
       </div>
 
       <div className="nav-buttons">
-        <button 
-          className="publish-btn" 
-          aria-label="Publicar oferta"
-          onClick={handlePublishClick}
-        >
-          <FaPlus /> <span className="btn-text">Publicar</span>
-        </button>
+          <button 
+            className="publish-btn" 
+            aria-label="Publicar oferta"
+            onClick={handlePublishClick}
+          >
+            <FaPlus /> <span className="btn-text">Publicar</span>
+          </button>
+        
+
+
         
         <div className="notifications-container">
           <button 

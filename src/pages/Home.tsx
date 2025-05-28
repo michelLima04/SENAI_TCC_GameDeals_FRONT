@@ -5,6 +5,7 @@ import { NavBar } from '../components/Navbar';
 import { FaHeart, FaRegHeart, FaClock, FaComment } from 'react-icons/fa';
 import { CardCustom } from '../components/CardCustom';
 import api from '../services/api';
+import Modal from '../components/Modal';
 
 type Post = {
   id: number;
@@ -14,6 +15,17 @@ type Post = {
   imagemUrl: string;
   site: string;
   tempoPostado: string;
+  username: string;
+  quantidadeComentarios: number;
+  quantidadeCurtidas: number;
+  isLiked?: boolean;
+  created_at: string;
+};
+
+type UpdatedPostResponse = {
+  id: number;
+  quantidadeCurtidas: number;
+  jaCurtido: boolean;
 };
 
 export function Home() {
@@ -26,76 +38,82 @@ export function Home() {
     }
   }
 
+  async function handleLikeObj(id) {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+          setIsErrorMsg("Por favor se autentique antes de curtir.");
+          setIsError(true);
+          setShowModal(true);
+        return;
+      }
+      const uri = `/Promocao/Feed/${id}/like`;
+      const response = await api.post<UpdatedPostResponse>(uri, {
+          
+      }, {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
+
+    const updatedPost = response.data;
+
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === id
+          ? {
+              ...post,
+              quantidadeCurtidas: updatedPost.quantidadeCurtidas,
+              isLiked: updatedPost.jaCurtido
+            }
+          : post
+      )
+    );
+    } catch (error) {
+      console.error("Erro ao buscar feed: ", error)
+    }
+  }
+
   useEffect(() => {
      fetchFeed()
   }, [])
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [promoPosts, setPromoPosts] = useState([
-    {
-      id: 1,
-      username: '@limamichel04',
-      productImage: 'https://m.media-amazon.com/images/I/71S9dis6PRL._AC_SX679_.jpg',
-      seller: 'Amazon',
-      productName: 'Headphone Fone de Ouvido Havit HV-H2002d',
-      price: 'R$229,98',
-      postedAgo: '2 horas atrás',
-      likes: 15,
-      isLiked: false,
-      comments: 8 // Número estático de comentários
-    },
-    {
-      id: 2,
-      username: '@gamergirl',
-      productImage: 'https://m.media-amazon.com/images/I/61BGE6iu4AL._AC_SX679_.jpg',
-      seller: 'Kabum',
-      productName: 'Teclado Mecânico Gamer Redragon Kumara',
-      price: 'R$199,90',
-      postedAgo: '1 dia atrás',
-      likes: 42,
-      isLiked: false,
-      comments: 23 // Número estático de comentários
-    }
-  ]);
-
-  const handleCardClick = (id: number) => {
-    console.log(`Card ${id} clicado`);
-  };
-
-  const handleLikeClick = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Impede que o evento de clique do card seja acionado
-    setPromoPosts(promoPosts.map(promo => {
-      if (promo.id === id) {
-        return {
-          ...promo,
-          likes: promo.isLiked ? promo.likes - 1 : promo.likes + 1,
-          isLiked: !promo.isLiked
-        };
-      }
-      return promo;
-    }));
-  };
+  const [promoPosts, setPromoPosts] = useState<Post[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isErrorMsg, setIsErrorMsg] = useState("");
 
   return (
     <div className="home-page">
       <NavBar />
+      {isError && (
+        <Modal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          title="Minha Modal"
+        >
+          <p>{isErrorMsg || "Erro interno por favor consulte o administrador."}</p>
+        </Modal>
+      )}
       <main className="main-container">
         <div className="card-container">
           {posts.map(post => (
             <CardCustom 
+            key={post.id}
               promo={{ id: post.id,
-                  username: '@limamichel04',
+                  username: `@${(post.username || "").toLowerCase()}`,
                   productImage: post.imagemUrl,
                   seller: post.site,
                   productName: post.titulo,
                   price: post.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
                   postedAgo: '2 horas atrás',
-                  likes: 15,
+                  likes: post.quantidadeCurtidas,
                   isLiked: false,
-                  comments: 8 
+                  comments: post.quantidadeComentarios 
                 }}
               handleCardClick={(id) => console.log("Abrir detalhes da promoção", id)}
-              handleLikeClick={(id) => console.log("Curtir promoção", id)}
+              handleLikeClick={(id => handleLikeObj(id))}
             />
           ))}
 

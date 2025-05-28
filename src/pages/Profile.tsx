@@ -12,9 +12,6 @@ export const Profile: React.FC = () => {
         fullName: 'Michel Lima',
         email: 'limamichel04@example.com',
         joinDate: '15/03/2023',
-        gamesPlayed: 42,
-        achievements: 18,
-        favoriteCategory: 'FPS',
         avatar: 'https://i.pravatar.cc/150?img=3' // Imagem de exemplo
     };
 
@@ -25,12 +22,16 @@ export const Profile: React.FC = () => {
                 <div className="profile-avatar-header">
                     <div className="profile-page-avatar">
                         <img src={userData.avatar} alt="Avatar" />
-                        <button className="edit-avatar-btn">✏️</button>
                     </div>
                     <div className="profile-info">
                         <h1>{userData.fullName}</h1>
                         <h2>{userData.username}</h2>
                     </div>
+                    <div className="profile-actions">
+                    <button className="action-btn edit-profile">
+                        <FaCog /> Editar Perfil
+                    </button>
+                </div>
                 </div>
 
                 <div className="profile-details">
@@ -42,23 +43,10 @@ export const Profile: React.FC = () => {
                         <h3>📧 Email</h3>
                         <p>{userData.email}</p>
                     </div>
-                    <div className="detail-card">
-                        <h3>🎮 Categoria Favorita</h3>
-                        <p>{userData.favoriteCategory}</p>
-                    </div>
-                </div>
-
-                <div className="profile-actions">
-                    <button className="action-btn edit-profile">
-                        <FaCog /> Editar Perfil
-                    </button>
-                    <button className="action-btn logout">
-                        <FaSignOutAlt /> Sair
-                    </button>
                 </div>
 
                 <div className="recent-activity">
-                    <h2>Atividade Recente</h2>
+                    <h2>Atividades Recente</h2>
                 </div>
             </main>
             <Footer />

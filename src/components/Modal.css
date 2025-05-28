@@ -1,0 +1,124 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 12, 16, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-container {
+  background: var(--dark-secondary);
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0, 216, 255, 0.2);
+  border: 1px solid rgba(0, 216, 255, 0.1);
+  animation: fadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--text-gray);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: var(--primary);
+  transform: rotate(90deg);
+  background: rgba(0, 216, 255, 0.1);
+}
+
+.modal-title {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.5px;
+  color: var(--primary);
+  text-transform: uppercase;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0, 216, 255, 0.3);
+}
+
+.modal-content {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-btn {
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.modal-btn-primary {
+  background: var(--primary);
+  color: var(--dark-bg);
+  border: none;
+  box-shadow: 0 0 15px rgba(0, 216, 255, 0.4);
+}
+
+.modal-btn-primary:hover {
+  background: hsl(189, 100%, 60%);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 216, 255, 0.6);
+}
+
+.modal-btn-secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+.modal-btn-secondary:hover {
+  background: rgba(0, 216, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

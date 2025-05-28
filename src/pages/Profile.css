@@ -30,8 +30,8 @@
     height: 150px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid #00ff08;
-    box-shadow: 0 0 15px rgba(0, 255, 8, 0.5);
+    border: 6px solid #00ff08;
+    box-shadow: 0 0 15px rgba(0, 14, 0, 0.5);
 }
 
 .profile-avatar img {
@@ -144,12 +144,6 @@
 .edit-profile:hover {
     background-color: #00bd0d;
     transform: translateY(-2px);
-}
-
-.logout {
-    background-color: transparent;
-    color: #ff3e3e;
-    border: 1px solid #ff3e3e;
 }
 
 .logout:hover {
