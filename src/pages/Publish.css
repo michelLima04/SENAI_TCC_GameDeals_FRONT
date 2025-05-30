@@ -20,29 +20,16 @@
   background-attachment: fixed;
 }
 
-/* Estilo para fixar a NavBar */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: var(--navbar-height); /* Altura fixa da NavBar */
-  z-index: 1000;
-  background: var(--dark-bg);
-  border-bottom: 1px solid rgba(0, 216, 255, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 216, 255, 0.05);
-}
 
 .publish-container {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: var(--navbar-height); /* Começa após a NavBar */
-  min-height: calc(100vh - var(--navbar-height)); /* Altura ajustada */
-  padding: 2rem 1rem;
-  overflow-y: auto; /* Barra de rolagem apenas no contêiner */
-  box-sizing: border-box; /* Garante que padding não aumente a altura */
+  margin-top: 1rem; 
+  min-height: calc(100vh - var(--navbar-height)); 
+  overflow-y: auto; 
+  box-sizing: border-box; 
 }
 
 .publish-card,

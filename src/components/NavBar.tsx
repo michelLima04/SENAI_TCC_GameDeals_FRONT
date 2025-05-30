@@ -74,11 +74,15 @@ export function NavBar() {
   };
 
   const handleSearch = () => {
-    if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-      console.log('Buscando por:', searchQuery);
-    }
-  };
+  const query = searchQuery.trim();
+
+  if (query) {
+    navigate(`/search?query=${encodeURIComponent(query)}`);
+    console.log('Buscando por:', query);
+  } else {
+    navigate('/search');
+  }
+};
 
   return (
     <nav className="navbar">

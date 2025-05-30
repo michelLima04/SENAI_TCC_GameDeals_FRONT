@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import './Publish.css';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../components/Navbar';
+import Footer from '../components/Footer';
 import { FiImage } from 'react-icons/fi';
 import api from '../services/api';
-
-
 
 export function Publish() {
     const [url, setUrl] = useState('');
@@ -306,6 +305,7 @@ export function Publish() {
                     </div>
                 )}
             </div>
+             <Footer />
         </div>
     );
 }

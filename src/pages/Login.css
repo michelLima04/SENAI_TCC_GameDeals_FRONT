@@ -39,7 +39,6 @@ body {
     height: 100vh;
     padding-top: 1rem; 
     border-right: 1px solid rgba(0, 217, 255, 0); 
-    animation: glow 3s infinite alternate;
 }
 
 .welcome-text {
@@ -121,7 +120,6 @@ body {
     box-shadow: 
         0 0 20px rgba(0, 216, 255, 0.05),
         0 0 40px rgba(0, 216, 255, 0.02);
-    animation: glow 3s infinite alternate;
 }
 
 @keyframes glow {
