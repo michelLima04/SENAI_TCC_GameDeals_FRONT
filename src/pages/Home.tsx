@@ -1,11 +1,11 @@
-// Home.tsx
-import React, { useEffect, useState } from 'react';
-import './Home.css';
-import { NavBar } from '../components/Navbar';
-import { FaHeart, FaRegHeart, FaClock, FaComment } from 'react-icons/fa';
-import { CardCustom } from '../components/CardCustom';
-import api from '../services/api';
-import Modal from '../components/Modal';
+import React, { useEffect, useState } from "react";
+import "./Home.css";
+import { NavBar } from "../components/NavBar";
+import { CardCustom } from "../components/CardCustom";
+import api from "../services/api";
+import Modal from "../components/Modal";
+import { CommentModal } from "../components/CommentModal";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Post = {
   id: number;
@@ -15,7 +15,7 @@ type Post = {
   imagemUrl: string;
   site: string;
   tempoPostado: string;
-  username: string;
+  usuarioNome: string;
   quantidadeComentarios: number;
   quantidadeCurtidas: number;
   isLiked?: boolean;
@@ -29,97 +29,146 @@ type UpdatedPostResponse = {
 };
 
 export function Home() {
- async function fetchFeed() {
-    try {
-      const response = await api.get<Post[]>('/Promocao/Feed');
-      setPosts(response.data);
-    } catch (error) {
-      console.error("Erro ao buscar feed:", error);
-    }
-  }
-
-  async function handleLikeObj(id) {
-    try {
-      const token = localStorage.getItem("jwtToken");
-      if (!token) {
-          setIsErrorMsg("Por favor se autentique antes de curtir.");
-          setIsError(true);
-          setShowModal(true);
-        return;
-      }
-      const uri = `/Promocao/Feed/${id}/like`;
-      const response = await api.post<UpdatedPostResponse>(uri, {
-          
-      }, {
-          headers: {
-              Authorization: `Bearer ${token}`
-          }
-      });
-
-    const updatedPost = response.data;
-
-    setPosts(prevPosts =>
-      prevPosts.map(post =>
-        post.id === id
-          ? {
-              ...post,
-              quantidadeCurtidas: updatedPost.quantidadeCurtidas,
-              isLiked: updatedPost.jaCurtido
-            }
-          : post
-      )
-    );
-    } catch (error) {
-      console.error("Erro ao buscar feed: ", error)
-    }
-  }
-
-  useEffect(() => {
-     fetchFeed()
-  }, [])
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [promoPosts, setPromoPosts] = useState<Post[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isErrorMsg, setIsErrorMsg] = useState("");
+  const [selectedPromo, setSelectedPromo] = useState<Post | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const useQueryParam = (key: string) => {
+    return new URLSearchParams(location.search).get(key);
+  };
+
+  const fetchFeed = async (titulo?: string | null) => {
+    setIsLoading(true);
+    try {
+      const response = await api.get<Post[]>("/Promocao/Feed", {
+        params: titulo ? { titulo } : {},
+      });
+      setPosts(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar feed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLikeObj = async (id: number) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        setIsErrorMsg("Por favor se autentique antes de curtir.");
+        setIsError(true);
+        setShowModal(true);
+        return;
+      }
+
+      const uri = `/Promocao/Feed/${id}/like`;
+      const response = await api.post<UpdatedPostResponse>(
+        uri,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const updatedPost = response.data;
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === id
+            ? {
+                ...post,
+                quantidadeCurtidas: updatedPost.quantidadeCurtidas,
+                isLiked: updatedPost.jaCurtido,
+              }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("Erro ao curtir promoção: ", error);
+    }
+  };
+
+  const handleSearch = () => {
+    const query = searchQuery.trim();
+    if (query) {
+      navigate(`/?query=${encodeURIComponent(query)}`);
+    } else {
+      navigate("/");
+    }
+  };
+
+  useEffect(() => {
+    const query = useQueryParam("query");
+    setSearchQuery(query ?? "");
+    fetchFeed(query);
+  }, [location.search]);
 
   return (
     <div className="home-page">
       <NavBar />
+
       {isError && (
         <Modal
           isOpen={showModal}
           onClose={() => setShowModal(false)}
-          title="Minha Modal"
+          title="Erro"
         >
-          <p>{isErrorMsg || "Erro interno por favor consulte o administrador."}</p>
+          <p>
+            {isErrorMsg || "Erro interno, por favor consulte o administrador."}
+          </p>
         </Modal>
       )}
+
+      {selectedPromo && (
+        <CommentModal
+          promo={selectedPromo}
+          onClose={() => setSelectedPromo(null)}
+        />
+      )}
+
       <main className="main-container">
-        <div className="card-container">
-          {posts.map(post => (
-            <CardCustom 
-            key={post.id}
-              promo={{ id: post.id,
-                  username: `@${(post.username || "").toLowerCase()}`,
+        {isLoading ? (
+          <div className="loading">Carregando promoções...</div>
+        ) : posts.length === 0 ? (
+          <div className="no-posts">Nenhuma promoção encontrada.</div>
+        ) : (
+          <div className="card-container">
+            {posts.map((post) => (
+              <CardCustom
+                key={post.id}
+                promo={{
+                  id: post.id,
+                  username: `@${(post.usuarioNome || "").toLowerCase()}`,
                   productImage: post.imagemUrl,
                   seller: post.site,
                   productName: post.titulo,
-                  price: post.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
-                  postedAgo: '2 horas atrás',
+                  price: post.preco.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }),
+                  postedAgo: "2 horas atrás",
                   likes: post.quantidadeCurtidas,
-                  isLiked: false,
-                  comments: post.quantidadeComentarios 
+                  isLiked: post.isLiked ?? false,
+                  comments: post.quantidadeComentarios,
                 }}
-              handleCardClick={(id) => console.log("Abrir detalhes da promoção", id)}
-              handleLikeClick={(id => handleLikeObj(id))}
-            />
-          ))}
-
-        </div>
+                handleLikeClick={() => handleLikeObj(post.id)}
+                onCommentClick={() => setSelectedPromo(post)}
+              />
+            ))}
+          </div>
+        )}
       </main>
-      <footer className="footer"></footer>
+
+      <footer className="footer" />
     </div>
   );
 }
