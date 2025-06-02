@@ -150,6 +150,99 @@ export const Profile: React.FC = () => {
               </div>
             </div>
           </header>
+          {showEditModal && (
+            <div
+              className="modal-overlay"
+              onClick={() => setShowEditModal(false)}
+            >
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <h3>Editar Perfil</h3>
+                <input
+                  className="modal-input"
+                  type="text"
+                  placeholder="Nome completo"
+                  value={formData.nome}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nome: e.target.value })
+                  }
+                />
+                <input
+                  className="modal-input"
+                  type="text"
+                  placeholder="Usuário"
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
+                  disabled
+                />
+                <input
+                  className="modal-input"
+                  type="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  disabled
+                />
+                <div className="modal-actions">
+                  <button
+                    className="btn cancel"
+                    onClick={() => setShowEditModal(false)}
+                  >
+                    Cancelar
+                  </button>
+                  <button className="btn confirm" onClick={handleEditProfile}>
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showPasswordModal && (
+            <div
+              className="modal-overlay"
+              onClick={() => setShowPasswordModal(false)}
+            >
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <h3>Trocar Senha</h3>
+                <input
+                  className="modal-input"
+                  type="password"
+                  placeholder="Senha atual"
+                  value={passwordData.atual}
+                  onChange={(e) =>
+                    setPasswordData({ ...passwordData, atual: e.target.value })
+                  }
+                />
+                <input
+                  className="modal-input"
+                  type="password"
+                  placeholder="Nova senha"
+                  value={passwordData.nova}
+                  onChange={(e) =>
+                    setPasswordData({ ...passwordData, nova: e.target.value })
+                  }
+                />
+                <div className="modal-actions">
+                  <button
+                    className="btn cancel"
+                    onClick={() => setShowPasswordModal(false)}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    className="btn confirm"
+                    onClick={handleChangePassword}
+                  >
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="profile-stats">
             <div className="stat-item">
