@@ -85,10 +85,10 @@ export function Home() {
         prevPosts.map((post) =>
           post.id === id
             ? {
-                ...post,
-                quantidadeCurtidas: updatedPost.quantidadeCurtidas,
-                isLiked: updatedPost.jaCurtido,
-              }
+              ...post,
+              quantidadeCurtidas: updatedPost.quantidadeCurtidas,
+              isLiked: updatedPost.jaCurtido,
+            }
             : post
         )
       );
@@ -132,6 +132,7 @@ export function Home() {
         <CommentModal
           promo={selectedPromo}
           onClose={() => setSelectedPromo(null)}
+          handleLikeClick={handleLikeObj}
         />
       )}
 

@@ -69,10 +69,14 @@ export function Login() {
         <div className="login-page-container">
             <div className="welcome-container">
                 <div className="logo">
-                    <Link to="/" className="logo-link">
-                        <PiGameControllerDuotone className="logo-icon" aria-label="Logo GameDeals" />
-                        <span className="gradient-logo">GameDeals</span>
-                    </Link>
+                        <Link to="/" className="logo-link">
+                          <span className="gradient-logo">Game</span>
+                          <PiGameControllerDuotone
+                            className="logo-icon"
+                            aria-label="Logo GameDeals"
+                          />
+                          <span className="gradient-logo">Deals</span>
+                        </Link>
                 </div>
             </div>
 

@@ -95,13 +95,15 @@ export function NavBar() {
     <nav className="navbar">
       <div className="logo">
         <Link to="/" className="logo-link">
+          <span className="gradient-logo">Game</span>
           <PiGameControllerDuotone
             className="logo-icon"
             aria-label="Logo GameDeals"
           />
-          <span className="gradient-logo">GameDeals</span>
+          <span className="gradient-logo">Deals</span>
         </Link>
       </div>
+
 
       {isError && (
         <Modal

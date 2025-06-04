@@ -20,6 +20,54 @@
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
 }
 
+.usuario-nome {
+  color: #00ff08fb; 
+  font-weight: bold;
+  margin-top: 5rem;
+  margin-right: 21rem;
+}
+
+.titulo-promocao {
+  color: #ffffff; 
+  font-size: 1.0em; 
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 0.5rem;
+}
+
+.preco-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.preco-promocao {
+  color: #00ff08fb;
+  font-size: 2rem;
+  font-weight: 600;
+  padding: rem;
+  margin: 0;
+  text-align: left;
+}
+
+.botao-acessar {
+  background: #007da700; 
+  color: #ff5100fb; 
+  border-radius: 6px; 
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Adicionado transições para borda e cor */
+}
+
+.botao-acessar:hover {
+  background: #321700;
+  border: 2px solid #ff5100fb;  ; 
+}
+
 .modal-close {
   position: absolute;
   top: 16px;
@@ -60,7 +108,7 @@
 }
 
 .modal-header small {
-  color: #00ccff;
+  color: #09ff00;
 }
 
 .modal-comments {
@@ -231,4 +279,15 @@
 .icon-button:hover {
   transform: scale(1.1);
   transition: 0.2s ease;
+}
+
+.promo-likes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #f6f6f6;
+}
+
+.liked2 {
+  color: red;
 }

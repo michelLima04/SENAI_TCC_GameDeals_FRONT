@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./CommentModal.css";
 import api from "../services/api";
-import { FaEdit, FaTrash, FaCommentDots } from "react-icons/fa";
+import { FaEdit, FaTrash, FaHeart, FaRegHeart, FaCommentDots } from "react-icons/fa";
 
 export type Comentario = {
   id: number;
@@ -13,15 +13,18 @@ export type Comentario = {
 
 export type PromoDetalhada = {
   id: number;
+  url: string,
   titulo: string;
   preco: number;
   imagemUrl: string;
   site: string;
   usuarioNome: string;
   comentarios: Comentario[];
+  isLiked: boolean; 
+  likes: number;
 };
 
-export function CommentModal({ promo, onClose }) {
+export function CommentModal({ promo, onClose, handleLikeClick }) {
   const [newComment, setNewComment] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [promoData, setPromoData] = useState<PromoDetalhada | null>(null);
@@ -35,6 +38,12 @@ export function CommentModal({ promo, onClose }) {
       setPromoData(response.data);
     } catch (error) {
       console.error("Erro ao buscar detalhes da promoção:", error);
+    }
+    try {
+      const response = await api.get(`/Promocao/Feed/${promo.id}`);
+      setPromoData(response.data);
+    } catch (error) {
+      console.error("Erro ao link do produto", error);
     }
   };
 
@@ -97,23 +106,44 @@ export function CommentModal({ promo, onClose }) {
         <button className="modal-close" onClick={onClose}>
           ×
         </button>
-
+        <small className="usuario-nome">@{promoData.usuarioNome}</small>
         <div className="modal-header">
           <img src={promoData.imagemUrl} alt={promoData.titulo} />
           <div>
-            <h2>{promoData.titulo}</h2>
-            <p>
-              {promoData.preco.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </p>
-            <small>@{promoData.usuarioNome}</small>
+            <h2 className="titulo-promocao">{promoData.titulo}</h2>
+            <div className="preco-container">
+              <p className="preco-promocao">
+                {promoData.preco.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </p>
+              <a href={promoData.url} className="botao-acessar" target="_blank" rel="noopener noreferrer">
+                Conferir ➤
+              </a>
+              <span
+                className="promo-likes"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLikeClick(promoData.id);
+                }}
+              >
+                {promoData.isLiked ? (
+                  <FaHeart className="meta-icon liked" />
+                ) : (
+                  <FaRegHeart className="meta-icon" />
+                )}{" "}
+                {promo.likes}
+              </span>
+
+
+            </div>
           </div>
         </div>
 
+        <h3>Comentários</h3>
         <div className="modal-comments">
-          <h3>Comentários</h3>
+
           {visibleComments.length === 0 && (
             <p className="no-comments">Nenhum comentário ainda.</p>
           )}
