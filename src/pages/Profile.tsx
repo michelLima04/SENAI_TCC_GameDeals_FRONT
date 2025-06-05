@@ -64,27 +64,6 @@ export const Profile: React.FC = () => {
       .join("")
       .toUpperCase();
 
-  const handleEditProfile = async () => {
-    try {
-      await axios.put(
-        "/Usuarios/Profile/editar",
-        {
-          nomeSobrenome: formData.nome,
-          usuarioNome: formData.username,
-          email: formData.email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-          },
-        }
-      );
-      setShowEditModal(false);
-      fetchUserData();
-    } catch {
-      alert("Erro ao editar perfil");
-    }
-  };
 
   const handleChangePassword = async () => {
     try {
@@ -135,12 +114,7 @@ export const Profile: React.FC = () => {
               <h1>{userData.fullName}</h1>
               <p>{userData.username}</p>
               <div className="action-buttons">
-                <button
-                  className="btn edit"
-                  onClick={() => setShowEditModal(true)}
-                >
-                  <FaUserEdit /> Editar Perfil
-                </button>
+                
                 <button
                   className="btn password"
                   onClick={() => setShowPasswordModal(true)}
@@ -174,7 +148,7 @@ export const Profile: React.FC = () => {
         </section>
 
         <section className="card activities-card">
-          <h2>Atividades Recentes ({logs.length})</h2>
+          <h2>Publicações Recentes ({logs.length})</h2>
           {logs.length === 0 ? (
             <p className="muted">Nenhuma atividade registrada.</p>
           ) : (

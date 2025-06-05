@@ -276,7 +276,7 @@ export function Publish() {
 
               <div className="detail-input-group">
                 <label htmlFor="coupon" className="detail-label">
-                  Cupom
+                  Cupom?
                 </label>
                 <input
                   type="text"
