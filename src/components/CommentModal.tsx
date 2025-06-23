@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./CommentModal.css";
 import api from "../services/api";
-import { FaEdit, FaTrash, FaCommentDots } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaCommentDots,
+  FaHeart,
+  FaRegHeart,
+} from "react-icons/fa";
 
 export type Comentario = {
   id: number;
@@ -19,9 +25,18 @@ export type PromoDetalhada = {
   site: string;
   usuarioNome: string;
   comentarios: Comentario[];
+  url: string;
+  isLiked: boolean;
+  likes: number;
 };
 
-export function CommentModal({ promo, onClose }) {
+type Props = {
+  promo: PromoDetalhada;
+  onClose: () => void;
+  handleLikeClick: (id: number) => void;
+};
+
+export function CommentModal({ promo, onClose, handleLikeClick }: Props) {
   const [newComment, setNewComment] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [promoData, setPromoData] = useState<PromoDetalhada | null>(null);
@@ -47,7 +62,11 @@ export function CommentModal({ promo, onClose }) {
     try {
       await api.post(
         "/Comentario/Cadastrar",
-        { comentarioTexto: newComment, idPromocao: promo.id },
+        {
+          comentarioTexto: newComment,
+          idPromocao: promo.id,
+          usuarioNome: promo.usuarioNome,
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setNewComment("");
@@ -94,21 +113,48 @@ export function CommentModal({ promo, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>
-          ×
-        </button>
+        <div className="modal-header-bar">
+          <button className="modal-close" onClick={onClose}>
+            ×
+          </button>
+        </div>
 
         <div className="modal-header">
-          <img src={promoData.imagemUrl} alt={promoData.titulo} />
-          <div>
-            <h2>{promoData.titulo}</h2>
-            <p>
-              {promoData.preco.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </p>
-            <small>@{promoData.usuarioNome}</small>
+          <div className="promo-user-link">
+            <img src={promoData.imagemUrl} alt={promoData.titulo} />
+          </div>
+
+          <div className="modal-info">
+            <p className="promo-user">@{promoData.usuarioNome}</p>
+
+            <h2 className="promo-title">{promoData.titulo}</h2>
+            <div className="price-row">
+              <p className="promo-price">{promoData.preco}</p>
+            </div>
+            <div className="promo-user-link">
+              <span
+                className="promo-likes"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLikeClick(promo.id);
+                }}
+              >
+                {promo.isLiked ? (
+                  <FaHeart className="meta-icon liked" />
+                ) : (
+                  <FaRegHeart className="meta-icon" />
+                )}
+                <span className="like-count">{promo.likes}</span>
+              </span>
+              <a
+                className="promo-link"
+                href={promoData.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Conferir →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -143,15 +189,12 @@ export function CommentModal({ promo, onClose }) {
               ) : (
                 <>
                   <p>
-                    <FaCommentDots
-                      style={{ marginRight: "6px", color: "#00bfff" }}
-                    />
+                    <FaCommentDots className="comment-icon" />
                     {comment.comentarioTexto}
                   </p>
                   <small>
                     por <strong>@{comment.usuarioNome}</strong>
                   </small>
-
                   {token && comment.isDono && (
                     <div className="comment-actions">
                       <button

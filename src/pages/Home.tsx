@@ -4,7 +4,7 @@ import { NavBar } from "../components/NavBar";
 import { CardCustom } from "../components/CardCustom";
 import api from "../services/api";
 import Modal from "../components/Modal";
-import { CommentModal } from "../components/CommentModal";
+import { CommentModal, Comentario } from "../components/CommentModal";
 import { useLocation, useNavigate } from "react-router-dom";
 
 type Post = {
@@ -18,8 +18,11 @@ type Post = {
   usuarioNome: string;
   quantidadeComentarios: number;
   quantidadeCurtidas: number;
-  isLiked?: boolean;
-  created_at: string;
+  isLiked: boolean;
+  createdAt: string;
+  url: string;
+  comentarios: Comentario[];
+  likes: number;
 };
 
 type UpdatedPostResponse = {
@@ -43,6 +46,45 @@ export function Home() {
   const useQueryParam = (key: string) => {
     return new URLSearchParams(location.search).get(key);
   };
+
+  function formatPostedAgo(dateString: string): string {
+    const now = new Date();
+    const postDate = new Date(dateString);
+    const diffMs = now.getTime() - postDate.getTime();
+
+    const totalMinutes = Math.floor(diffMs / (1000 * 60));
+    const totalHours = Math.floor(totalMinutes / 60);
+    const days = Math.floor(totalHours / 24);
+    const hours = totalHours % 24;
+    const minutes = totalMinutes % 60;
+
+    const pluralize = (value: number, singular: string, plural: string) =>
+      `${value} ${value === 1 ? singular : plural}`;
+
+    if (days > 0) {
+      if (hours > 0) {
+        return `há ${pluralize(days, "dia", "dias")} e ${pluralize(
+          hours,
+          "hora",
+          "horas"
+        )}`;
+      }
+      return `há ${pluralize(days, "dia", "dias")}`;
+    }
+
+    if (totalHours > 0) {
+      if (minutes > 0) {
+        return `há ${pluralize(totalHours, "hora", "horas")} e ${pluralize(
+          minutes,
+          "minuto",
+          "minutos"
+        )}`;
+      }
+      return `há ${pluralize(totalHours, "hora", "horas")}`;
+    }
+
+    return `há ${pluralize(minutes, "minuto", "minutos")}`;
+  }
 
   const fetchFeed = async (titulo?: string | null) => {
     setIsLoading(true);
@@ -155,10 +197,11 @@ export function Home() {
                     style: "currency",
                     currency: "BRL",
                   }),
-                  postedAgo: "2 horas atrás",
+                  postedAgo: formatPostedAgo(post.createdAt),
                   likes: post.quantidadeCurtidas,
                   isLiked: post.isLiked ?? false,
                   comments: post.quantidadeComentarios,
+                  site: post.url,
                 }}
                 handleLikeClick={() => handleLikeObj(post.id)}
                 onCommentClick={() => setSelectedPromo(post)}
