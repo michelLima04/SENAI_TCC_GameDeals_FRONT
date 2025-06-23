@@ -37,7 +37,7 @@
 
 .modal-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -49,18 +49,47 @@
   object-fit: contain;
 }
 
-.modal-header h2 {
+.modal-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.promo-title {
   font-size: 1.6rem;
-  margin: 0;
-}
-
-.modal-header p {
-  margin: 0.25rem 0;
   font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
 }
 
-.modal-header small {
-  color: #00ccff;
+.promo-price {
+  font-size: 2rem;
+  color: #00ffcc;
+  margin: 4px 0 0.5rem 0;
+  flex: 1;
+  
+}
+
+.promo-user {
+  font-size: 0.95rem;
+  color: #cccccc;
+  margin-bottom: 0.6rem;
+}
+
+.promo-link {
+  background-color: #00bfff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.promo-link:hover {
+  background-color: #009ed8;
 }
 
 .modal-comments {
@@ -71,6 +100,60 @@
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #333 transparent;
+}
+
+.like-container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row-reverse;  
+  justify-content: space-between;
+}
+
+.promo-user-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: end;
+
+}
+
+.promo-likes {
+  cursor: pointer;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.2rem;
+  color: #ccc;
+  transition: transform 0.2s ease;
+}
+
+.promo-likes:hover {
+  transform: scale(1.05);
+}
+
+.meta-icon {
+  font-size: 1.5rem;
+  color: #ccc;
+}
+
+.meta-icon.liked {
+  color: red;
+}
+
+.like-count {
+  font-size: 1rem;
+  color: #fff;
+}
+
+.comment-icon {
+  margin-right: 6px;
+  color: #00bfff;
 }
 
 .modal-comments::-webkit-scrollbar {
