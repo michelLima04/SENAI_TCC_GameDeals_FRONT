@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary: hsl(189, 100%, 50%);
-  --secondary: hsl(189, 100%, 50%);
+  --primary: #00ffff; 
   --dark-bg: #0a0c10;
   --dark-secondary: #11161d;
   --text-light: #ffffff;
@@ -37,53 +36,52 @@ body {
   height: var(--navbar-height);
 }
 
-.logo {
+.logo-link1 {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 1.5px;
-  font-size: 1.0rem;
-  font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
-  text-transform: uppercase;
-}
-
-.logo-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  gap: 0.4rem;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
 }
 
-.logo-link:hover {
+.logo-link1:hover {
   transform: scale(1.05);
 }
 
-.logo-icon {
-  color: var(--primary);
-  font-size: 2rem;
-  filter: drop-shadow(0 0 5px rgba(0, 216, 255, 0.5));
+.logo-game1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--primary); 
 }
 
-.gradient-logo {
-  background: linear-gradient(90deg, var(--primary), hsl(189, 100%, 70%));
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 10px rgba(0, 216, 255, 0.3);
+.logo-deals1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  margin-left: -0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--primary); 
+}
+
+.logo-icon1 {
+  color: #ffffff !important;
+  font-size: 2.6rem;
+  margin-left: -0.4rem;
+  transition: transform 0.3s ease;
 }
 
 .search-bar {
   flex: 1;
-  max-width: 650px;
+  max-width: 800px;
   display: flex;
   align-items: center;
   background: var(--dark-secondary);
   border-radius: 50px;
-  padding: 0.2rem 0.6rem; /* Ajustado para melhor espaçamento com o botão */
+  padding: 0.2rem 0.6rem; 
   margin: 0 1.5rem;
   transition: all 0.4s ease-out;
   border: 1px solid rgba(0, 216, 255, 0.2);
@@ -195,19 +193,17 @@ body {
   margin-left: auto;
 }
 
-.notifications-container,
 .profile-container {
   position: relative;
 }
 
-.notifications-btn,
 .profile-btn {
   background: transparent;
   border: 2px solid var(--dark-secondary);
   border-radius: 50%;
   padding: 0.5rem;
   color: var(--primary);
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   cursor: pointer;
   transition: all 0.3s;
   display: grid;
@@ -215,31 +211,12 @@ body {
   margin-right: 0.5rem;
 }
 
-.notifications-btn:hover,
 .profile-btn:hover {
   border-color: var(--primary);
   transform: scale(1.1);
   background: rgba(0, 216, 255, 0.1);
 }
 
-.notification-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: var(--notification-badge);
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
-  font-weight: bold;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.notifications-panel,
 .profile-panel {
   position: absolute;
   right: 0;
@@ -254,11 +231,10 @@ body {
   backdrop-filter: blur(10px);
   animation: fadeIn 0.2s ease-out;
   margin-left: 8;
-  margin-top: 0.2rem;
+  margin-top: -1rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.notifications-header,
 .profile-header {
   padding: 1rem;
   display: flex;
@@ -268,7 +244,6 @@ body {
   margin-bottom: 0.25rem;
 }
 
-.notifications-header span,
 .profile-header span {
   font-family: 'Orbitron', sans-serif;
   font-size: 1rem;
@@ -279,7 +254,6 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-.notification-item,
 .profile-panel-item {
   width: 100%;
   padding: 0.50rem 1rem;
@@ -296,53 +270,23 @@ body {
   border-left: 3px solid transparent;
 }
 
-.notification-item:hover,
 .profile-panel-item:hover {
   background: rgba(0, 216, 255, 0.1);
   border-left-color: var(--primary);
   color: var(--primary);
 }
 
-.notification-item svg,
 .profile-panel-item svg {
   font-size: 1rem;
   color: var(--text-gray);
   transition: all 0.2s;
 }
 
-.notification-item:hover svg,
 .profile-panel-item:hover svg {
   color: var(--primary);
   transform: scale(1.1);
 }
 
-.notifications-count {
-  background: var(--primary);
-  color: var(--dark-bg);
-  padding: 0.15rem 0.5rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  font-weight: bold;
-  margin-left: 0.5rem;
-}
-
-.notification-content {
-  flex: 1;
-}
-
-.notification-time {
-  color: var(--text-gray);
-  font-size: 0.7rem;
-  margin-top: 0.2rem;
-  display: block;
-}
-
-.no-notifications {
-  padding: 1.5rem;
-  text-align: center;
-  color: var(--text-gray);
-  font-size: 0.9rem;
-}
 
 .profile-avatar {
   width: 50px;
@@ -400,29 +344,16 @@ body {
     gap: 1rem;
   }
   
-  .logo-text {
-    display: none;
-  }
-  
   .search-bar {
     margin-left: 0;
     order: 1;
     flex: 1;
   }
   
-  .logo {
-    order: 0;
-  }
-  
   .nav-buttons {
     order: 2;
     margin-left: 0;
     gap: 0.5rem;
-  }
-  
-  .notifications-panel {
-    width: 280px;
-    right: -0.5rem;
   }
   
   .profile-panel {
@@ -440,9 +371,4 @@ body {
     padding: 0.5rem 0.5rem;
   }
   
-  .notifications-panel,
-  .profile-panel {
-    width: 280px;
-    right: -10px;
-  }
 }

@@ -16,6 +16,8 @@ import "./NavBar.css";
 import { jwtDecode } from "jwt-decode";
 import Modal from "./Modal";
 
+// Barra de navegação do Site
+
 interface JwtDecoded {
   userName: string;
   UserId: string;
@@ -26,11 +28,8 @@ export function NavBar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isProfilePanelOpen, setIsProfilePanelOpen] = useState(false);
-  const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
-    useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
-  const [notifications, setNotifications] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isErrorMsg, setIsErrorMsg] = useState("");
@@ -50,13 +49,9 @@ export function NavBar() {
 
   const toggleProfilePanel = () => {
     setIsProfilePanelOpen(!isProfilePanelOpen);
-    setIsNotificationsPanelOpen(false);
   };
 
-  const toggleNotificationsPanel = () => {
-    setIsNotificationsPanelOpen(!isNotificationsPanelOpen);
-    setIsProfilePanelOpen(false);
-  };
+  
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -76,7 +71,7 @@ export function NavBar() {
       navigate("/publish");
     }
 
-    setIsErrorMsg("Para publicar seu achado, faça o login ou crie sua conta!");
+    //setIsErrorMsg("Para publicar seu achado, faça o login ou crie sua conta!");
     setIsError(true);
     setShowModal(true);
   };
@@ -93,13 +88,11 @@ export function NavBar() {
 
   return (
     <nav className="navbar">
-      <div className="logo">
-        <Link to="/" className="logo-link">
-          <PiGameControllerDuotone
-            className="logo-icon"
-            aria-label="Logo GameDeals"
-          />
-          <span className="gradient-logo">GameDeals</span>
+      <div className="logo1">
+        <Link to="/" className="logo-link1">
+          <span className="logo-game1">Game</span>
+          <PiGameControllerDuotone className="logo-icon1" aria-label="Logo GameDeals1" />
+          <span className="logo-deals1">Deals</span>
         </Link>
       </div>
 
@@ -107,7 +100,7 @@ export function NavBar() {
         <Modal
           isOpen={showModal}
           onClose={() => setShowModal(false)}
-          title="Calma calabreso!"
+          title="CALMA CALABRESO!"
         >
           <p>
             {isErrorMsg || "Erro interno por favor consulte o administrador."}
@@ -130,12 +123,15 @@ export function NavBar() {
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setSearchFocused(true)}
           onBlur={() => setSearchFocused(false)}
-          onKeyPress={(e) => e.key === "Enter" && handleSearch()} // Permite busca ao pressionar Enter
+          onKeyPress={(e) => e.key === "Enter" && handleSearch()} 
         />
         {searchQuery && (
           <button
             className="clear-search"
-            onClick={() => setSearchQuery("")}
+            onClick={() => {
+              setSearchQuery("");
+              navigate("/");
+            }}
             aria-label="Limpar busca"
           >
             <FaTimes />
@@ -152,33 +148,7 @@ export function NavBar() {
           <FaPlus /> <span className="btn-text">Publicar</span>
         </button>
 
-        <div className="notifications-container">
-          <button
-            className="notifications-btn"
-            aria-label="Notificações"
-            onClick={toggleNotificationsPanel}
-          >
-            <FaBell />
-          </button>
-
-          {isNotificationsPanelOpen && (
-            <div className="notifications-panel">
-              <div className="notifications-header">
-                <span>Notificações</span>
-              </div>
-
-              {notifications.length > 0 ? (
-                <div className="notifications-list">
-                  {/* Aqui você renderizaria as notificações */}
-                  {/* {notifications.map(notification => (...))} */}
-                </div>
-              ) : (
-                <div className="no-notifications">Nada por enquanto...</div>
-              )}
-            </div>
-          )}
-        </div>
-
+        
         <div className="profile-container">
           <button
             className="profile-btn"

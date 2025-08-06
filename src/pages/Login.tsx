@@ -4,6 +4,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { PiGameControllerDuotone } from 'react-icons/pi';
 import api from '../services/api';
 
+// Página de Login
+
 interface LoginResponse {
     mensagem: string;
     token: string;
@@ -31,16 +33,16 @@ export function Login() {
         e.preventDefault();
         setIsLoading(true);
         setMessage('');
-    
+
         try {
             const response = await api.post<LoginResponse>('/Usuarios/Login', {
                 email: email,
                 senha: password
             });
-    
+
             if (response.data.token) {
                 localStorage.setItem('jwtToken', response.data.token);
-                setMessage('Login bem-sucedido!'); 
+                setMessage('Login bem-sucedido!');
                 setTimeout(() => navigate('/'), 1500);
             }
         } catch (error: any) {
@@ -68,10 +70,11 @@ export function Login() {
     return (
         <div className="login-page-container">
             <div className="welcome-container">
-                <div className="logo">
-                    <Link to="/" className="logo-link">
-                        <PiGameControllerDuotone className="logo-icon" aria-label="Logo GameDeals" />
-                        <span className="gradient-logo">GameDeals</span>
+                <div className="logo2">
+                    <Link to="/" className="logo-link2">
+                        <span className="logo-game2">Game</span>
+                        <PiGameControllerDuotone className="logo-icon2" aria-label="Logo GameDeals" />
+                        <span className="logo-deals2">Deals</span>
                     </Link>
                 </div>
             </div>

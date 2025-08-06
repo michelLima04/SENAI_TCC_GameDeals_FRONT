@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./CommentModal.css";
 import api from "../services/api";
+
 import {
   FaEdit,
   FaTrash,
   FaCommentDots,
   FaHeart,
   FaRegHeart,
+ FaCopy 
 } from "react-icons/fa";
 
 export type Comentario = {
@@ -24,6 +26,7 @@ export type PromoDetalhada = {
   imagemUrl: string;
   site: string;
   usuarioNome: string;
+  cupom: string;
   comentarios: Comentario[];
   url: string;
   isLiked: boolean;
@@ -76,6 +79,8 @@ export function CommentModal({ promo, onClose, handleLikeClick }: Props) {
     }
   };
 
+
+
   const handleDelete = async (id: number) => {
     if (!token || !window.confirm("Deseja realmente excluir o comentário?"))
       return;
@@ -105,10 +110,36 @@ export function CommentModal({ promo, onClose, handleLikeClick }: Props) {
     }
   };
 
+  const toggleLike = async () => {
+      if (!token) return;
+
+      try {
+        const response = await api.post(`/Promocao/Feed/${promo.id}/like`, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const { quantidadeCurtidas, jaCurtido } = response.data;
+
+        setPromoData(prev => prev ? {
+          ...prev,
+          likes: quantidadeCurtidas,
+          isLiked: jaCurtido
+        } : prev);
+      } catch (error) {
+        console.error("Erro ao curtir/descurtir:", error);
+      }
+  };
+
+
   if (!promoData) return null;
 
   const comments = promoData.comentarios || [];
   const visibleComments = showAll ? comments : comments.slice(0, 3);
+  function handleCopy(cupom) {
+    const texto = cupom ? cupom : "Sem cupom";
+    navigator.clipboard.writeText(texto);
+    alert("Cupom copiado!");
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -128,33 +159,45 @@ export function CommentModal({ promo, onClose, handleLikeClick }: Props) {
             <p className="promo-user">@{promoData.usuarioNome}</p>
 
             <h2 className="promo-title">{promoData.titulo}</h2>
-            <div className="price-row">
-              <p className="promo-price">{promoData.preco}</p>
-            </div>
-            <div className="promo-user-link">
+            <div className="price-row" style={{ display: "flex", alignItems: "center" }}>
+              
               <span
                 className="promo-likes"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleLikeClick(promo.id);
+                  toggleLike();
                 }}
+                style={{ marginLeft: "auto", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", color: "#ff6a00" }}
               >
-                {promo.isLiked ? (
+                {promoData.isLiked ? (
                   <FaHeart className="meta-icon liked" />
                 ) : (
                   <FaRegHeart className="meta-icon" />
                 )}
-                <span className="like-count">{promo.likes}</span>
+                <span className="like-count">{promoData.likes}</span>
               </span>
-              <a
-                className="promo-link"
-                href={promoData.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Conferir →
-              </a>
+
+
+              <p className="promo-price" style={{ margin: 0 }}>
+                R$ {promoData.preco.toFixed(2).replace('.', ',')}
+              </p>
+              <span className="cupom-border">
+                  {promoData.cupom ? promoData.cupom : "Sem cupom"}
+                  {promoData.cupom && (
+                    <button className="copy-btn" onClick={() => handleCopy(promoData.cupom)}>
+                      <FaCopy />
+                    </button>
+                  )}
+                </span>
             </div>
+            <a
+              className="promo-link"
+              href={promoData.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Conferir ➤
+            </a>
           </div>
         </div>
 
@@ -195,7 +238,7 @@ export function CommentModal({ promo, onClose, handleLikeClick }: Props) {
                   <small>
                     por <strong>@{comment.usuarioNome}</strong>
                   </small>
-                  {token && comment.isDono && (
+                  {token && (
                     <div className="comment-actions">
                       <button
                         onClick={() => {

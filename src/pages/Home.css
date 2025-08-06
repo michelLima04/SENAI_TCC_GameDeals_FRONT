@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #42005c3e;
+  background-color: #5500763e;
   background-image: radial-gradient(
       circle at 10% 20%,
       rgba(0, 255, 8, 0.05) 0%,
@@ -18,25 +18,24 @@
 }
 
 .main-container {
-  background-color: rgba(0, 0, 0, 0.37);
+  background-color: rgba(0, 0, 0, 0.477);
   border-radius: 20px;
   flex: 1;
-  margin-top: 20px;
-  margin-bottom: 80px;
   overflow-y: auto;
-  max-height: calc(100vh - 140px);
+  max-height: calc(108vh - 140px);
   border: 1px solid rgba(0, 255, 8, 0.1);
   backdrop-filter: blur(5px);
   position: relative;
+  padding-top: 55px;
 }
 
 .card-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  gap: 25px;
+  padding: 15px;
   align-items: stretch;
-  margin-top: 1rem;
+  margin-top: 0.3rem;
 }
 
 .main-container > .inner-content {
@@ -59,4 +58,63 @@
 
 .main-container::-webkit-scrollbar-thumb:hover {
   background: #007b08;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-buttons button {
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 1rem;
+}
+
+.modal-buttons button:first-child {
+  background-color: #28a745; 
+  color: white;
+}
+
+.modal-buttons button:first-child:hover {
+  background-color: #218838; 
+}
+
+.modal-buttons button:last-child {
+  background-color: #f8f9fa; 
+  color: #212529;
+  border: 1px solid #dee2e6;
+}
+
+.modal-buttons button:last-child:hover {
+  background-color: #e2e6ea; 
+}
+
+.loading {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00ff04; 
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.no-posts {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 1.2rem;
+  color: #fbfbfb; 
+  font-style: italic;
 }

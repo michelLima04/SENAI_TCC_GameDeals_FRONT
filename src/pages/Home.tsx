@@ -7,6 +7,8 @@ import Modal from "../components/Modal";
 import { CommentModal, Comentario } from "../components/CommentModal";
 import { useLocation, useNavigate } from "react-router-dom";
 
+// Página Home do Site
+
 type Post = {
   id: number;
   titulo: string;
@@ -42,6 +44,10 @@ export function Home() {
   const [selectedPromo, setSelectedPromo] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [userLogged, setUserLogged] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [promoToDelete, setPromoToDelete] = useState<number | null>(null);
 
   const useQueryParam = (key: string) => {
     return new URLSearchParams(location.search).get(key);
@@ -63,28 +69,51 @@ export function Home() {
 
     if (days > 0) {
       if (hours > 0) {
-        return `há ${pluralize(days, "dia", "dias")} e ${pluralize(
+        return `há ${pluralize(days, "d", "d")} e ${pluralize(
           hours,
-          "hora",
-          "horas"
+          "h",
+          "h"
         )}`;
       }
-      return `há ${pluralize(days, "dia", "dias")}`;
+      return `há ${pluralize(days, "d", "d")}`;
     }
 
     if (totalHours > 0) {
       if (minutes > 0) {
-        return `há ${pluralize(totalHours, "hora", "horas")} e ${pluralize(
+        return `há ${pluralize(totalHours, "h", "h")} e ${pluralize(
           minutes,
-          "minuto",
-          "minutos"
+          "min",
+          "min"
         )}`;
       }
-      return `há ${pluralize(totalHours, "hora", "horas")}`;
+      return `há ${pluralize(totalHours, "h", "h")}`;
     }
 
-    return `há ${pluralize(minutes, "minuto", "minutos")}`;
+    return `há ${pluralize(minutes, "min", "min")}`;
   }
+
+  const userProfile = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        setUserLogged("");
+        return; 
+      }
+
+      const uri = `/Usuarios/Profile/me`;
+      const response = await api.get(uri, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setUserLogged(response.data.username);
+      }
+    } catch (error) {
+      console.error("Erro ao curtir promoção: ", error);
+    }
+  };
 
   const fetchFeed = async (titulo?: string | null) => {
     setIsLoading(true);
@@ -100,11 +129,26 @@ export function Home() {
     }
   };
 
+  const fetchSearchResults = async (nomeProduto: string) => {
+    setIsLoading(true);
+    try {
+      const response = await api.get<Post[]>("/Promocao/Buscar", {
+        params: { nomeProduto },
+      });
+      setPosts(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar promoções:", error);
+      setPosts([]); // limpa resultados em erro
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleLikeObj = async (id: number) => {
     try {
       const token = localStorage.getItem("jwtToken");
       if (!token) {
-        setIsErrorMsg("Por favor se autentique antes de curtir.");
+        setIsErrorMsg("Para curtir logue ou crie sua conta!");
         setIsError(true);
         setShowModal(true);
         return;
@@ -139,6 +183,50 @@ export function Home() {
     }
   };
 
+  const handleDeletePromotion = async (id: number) => {
+    try {
+      const response = await api.delete(`/Promocao/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setSuccessMsg("Promoção excluída com sucesso!");
+        setIsSuccess(true);
+        setShowModal(true);
+        setPosts(posts.filter((post) => post.id !== id));
+      }
+    } catch (error) {
+      console.error("Erro ao deletar promoção:", error);
+      setIsErrorMsg("Erro ao deletar a promoção.");
+      setIsError(true);
+      setShowModal(true);
+    }
+  };
+
+  const confirmDelete = (id: number) => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      setIsErrorMsg("Para excluir, logue ou crie sua conta!");
+      setIsError(true);
+      setShowModal(true);
+      return;
+    }
+
+    setPromoToDelete(id);
+    setIsErrorMsg("Tem certeza que deseja excluir esta promoção?");
+    setIsError(true);
+    setShowModal(true);
+  };
+
+  const handleDeleteConfirmation = async () => {
+    if (promoToDelete) {
+      await handleDeletePromotion(promoToDelete);
+    }
+    setShowModal(false);
+  };
+
   const handleSearch = () => {
     const query = searchQuery.trim();
     if (query) {
@@ -151,67 +239,90 @@ export function Home() {
   useEffect(() => {
     const query = useQueryParam("query");
     setSearchQuery(query ?? "");
-    fetchFeed(query);
+    userProfile();
+
+    if (query && query.trim() !== "") {
+      fetchSearchResults(query);
+    } else {
+      fetchFeed();
+    }
   }, [location.search]);
 
   return (
-    <div className="home-page">
+    <>
       <NavBar />
-
-      {isError && (
-        <Modal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          title="Erro"
-        >
-          <p>
-            {isErrorMsg || "Erro interno, por favor consulte o administrador."}
-          </p>
-        </Modal>
-      )}
-
-      {selectedPromo && (
-        <CommentModal
-          promo={selectedPromo}
-          onClose={() => setSelectedPromo(null)}
-        />
-      )}
-
-      <main className="main-container">
-        {isLoading ? (
-          <div className="loading">Carregando promoções...</div>
-        ) : posts.length === 0 ? (
-          <div className="no-posts">Nenhuma promoção encontrada.</div>
-        ) : (
-          <div className="card-container">
-            {posts.map((post) => (
-              <CardCustom
-                key={post.id}
-                promo={{
-                  id: post.id,
-                  username: `@${(post.usuarioNome || "").toLowerCase()}`,
-                  productImage: post.imagemUrl,
-                  seller: post.site,
-                  productName: post.titulo,
-                  price: post.preco.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }),
-                  postedAgo: formatPostedAgo(post.createdAt),
-                  likes: post.quantidadeCurtidas,
-                  isLiked: post.isLiked ?? false,
-                  comments: post.quantidadeComentarios,
-                  site: post.url,
-                }}
-                handleLikeClick={() => handleLikeObj(post.id)}
-                onCommentClick={() => setSelectedPromo(post)}
-              />
-            ))}
-          </div>
+      <div className="home-page">
+        {(isError || isSuccess) && (
+          <Modal
+            isOpen={showModal}
+            onClose={() => {
+              setShowModal(false);
+              setIsError(false);
+              setIsSuccess(false);
+            }}
+            title={isError ? "Aviso!" : "Sucesso"}
+            //titleColor={isSuccess ? "#28a745" : undefined}
+          >
+            <div style={isSuccess ? { color: "#28a745", textAlign: "center" } : {}}>
+              <p>{isError ? isErrorMsg : successMsg}</p>
+            </div>
+            {isError && promoToDelete && (
+              <div className="modal-buttons">
+                <button onClick={handleDeleteConfirmation}>Confirmar</button>
+                <button onClick={() => setShowModal(false)}>Cancelar</button>
+              </div>
+            )}
+          </Modal>
         )}
-      </main>
 
-      <footer className="footer" />
-    </div>
+        {selectedPromo && (
+          <CommentModal
+            promo={selectedPromo}
+            onClose={() => setSelectedPromo(null)}
+            handleLikeClick={function (id: number): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
+        )}
+
+        <main className="main-container">
+          {isLoading ? (
+            <div className="loading">Carregando promoções...</div>
+          ) : posts.length === 0 ? (
+            <div className="no-posts">Nenhuma promoção encontrada.</div>
+          ) : (
+            <div className="card-container">
+              {posts.map((post) => (
+                <CardCustom
+                  key={post.id}
+                  promo={{
+                    id: post.id,
+                    username: `@${(post.usuarioNome || "").toLowerCase()}`,
+                    productImage: post.imagemUrl,
+                    seller: post.site,
+                    productName: post.titulo,
+                    price: post.preco.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }),
+                    postedAgo: formatPostedAgo(post.createdAt),
+                    likes: post.quantidadeCurtidas,
+                    isLiked: post.isLiked ?? false,
+                    comments: post.quantidadeComentarios,
+                    site: post.url,
+                  }}
+                  handleLikeClick={() => handleLikeObj(post.id)}
+                  onCommentClick={() => setSelectedPromo(post)}
+                  handleDeletePublish={() => confirmDelete(post.id)}
+                  userLogged={userLogged}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+
+        <footer className="footer" />
+      </div>
+    </>
   );
 }

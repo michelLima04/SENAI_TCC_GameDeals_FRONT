@@ -6,6 +6,8 @@ import Footer from "../components/Footer";
 import { FiImage } from "react-icons/fi";
 import api from "../services/api";
 
+// Página de Publicação do Produto
+
 export function Publish() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +35,7 @@ export function Publish() {
           "/Promocao/Cadastrar",
           {
             urlPromocao: url,
-            cupom: "",
+            cupom: productDetails.coupon,
             isAdd: false,
           },
           {
@@ -84,7 +86,7 @@ export function Publish() {
         "/Promocao/Cadastrar",
         {
           urlPromocao: url,
-          cupom: "",
+          cupom: productDetails.coupon,
           isAdd: true,
         },
         {
@@ -151,7 +153,6 @@ export function Publish() {
   return (
     <div className="publish-page">
       <NavBar />
-
       <div className="publish-container">
         {!showProductDetails ? (
           <div className="publish-card">
@@ -159,9 +160,10 @@ export function Publish() {
               <h2 className="publish-title">
                 <span className="gradient-text">COMPARTILHE SEU ACHADO!</span>
               </h2>
-              <p className="publish-subtitle">
-                Cole abaixo o link que deseja compartilhar
+              <p className="publish-subtitle1">
+                Cole abaixo o link do produto que deseja compartilhar
               </p>
+              <p className="publish-subtitle2">*Lembrete: Apenas produtos do nicho GAMER</p>
             </div>
 
             <form onSubmit={handleSubmit} className="publish-form">
@@ -210,6 +212,7 @@ export function Publish() {
             </div>
 
             <div className="details-content">
+
               <div className="image-display-group">
                 <div className="image-icon-container">
                   <FiImage className="image-icon" />
@@ -234,6 +237,7 @@ export function Publish() {
                   onChange={handleDetailChange}
                   className="detail-input"
                   placeholder="exemplo"
+                  readOnly
                 />
               </div>
 
@@ -250,6 +254,7 @@ export function Publish() {
                   className="detail-input"
                   placeholder="Nome do produto"
                   required
+                  readOnly
                 />
               </div>
 
@@ -267,6 +272,7 @@ export function Publish() {
                     className="detail-input"
                     placeholder="0000 (ex: 1000 = R$ 10,00)"
                     required
+                    readOnly
                   />
                   <span className="price-preview">
                     {formatPrice(productDetails.price)}
@@ -276,7 +282,7 @@ export function Publish() {
 
               <div className="detail-input-group">
                 <label htmlFor="coupon" className="detail-label">
-                  Cupom
+                  Cupom ?
                 </label>
                 <input
                   type="text"
@@ -311,7 +317,7 @@ export function Publish() {
                 {isLoadingConfirm ? (
                   <span className="loading-spinner"></span>
                 ) : (
-                  "CONFIRMAR PUBLICAÇÃO"
+                  "CONFIRMAR"
                 )}
               </button>
             </div>

@@ -1,12 +1,11 @@
 .product-card {
-  background-color: #1c1c1c;
+  background-color: #000000;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
   transition: transform 0.2s ease;
 }
@@ -16,11 +15,27 @@
 }
 
 .card-header {
-  background-color: #111;
+  background-color: #1c1c1c;
   padding: 10px;
   color: #ccc;
   font-weight: bold;
   font-size: 0.9rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;  
+}
+
+.delete-card {
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.2s;
+}
+
+.delete-card:hover {
+  color: darkred;
 }
 
 .card-image {
@@ -32,7 +47,7 @@
 }
 
 .card-image img {
-  max-height: 100%;
+  max-height: 99%;
   max-width: 100%;
   object-fit: contain;
 }
@@ -53,7 +68,7 @@
 }
 
 .product-company {
-  color: #00ff66;
+  color: #33ff00;
   font-weight: bold;
 }
 
@@ -61,6 +76,7 @@
   color: #fff;
   font-size: 1rem;
   font-weight: 600;
+  text-align: justify;
   min-height: 48px;
   margin-bottom: 10px;
 }
@@ -68,8 +84,9 @@
 .product-price {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #00ff66;
-  margin-bottom: 10px;
+  color: #22ff00;
+  margin-top: auto;
+  margin-bottom: 5px;
 }
 
 .promo-meta {

@@ -1,6 +1,8 @@
 import React from "react";
 import "./Modal.css"; 
 
+// Janela para notificar que o Usuário precisa estar logado
+
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 

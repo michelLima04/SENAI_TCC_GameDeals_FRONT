@@ -6,6 +6,8 @@ import { FaTrophy, FaUserEdit, FaKey } from "react-icons/fa";
 import axios from "../services/api";
 import "./Profile.css";
 
+// Página de Perfil
+
 export const Profile: React.FC = () => {
   const [userData, setUserData] = useState<{
     username: string;
@@ -135,12 +137,8 @@ export const Profile: React.FC = () => {
               <h1>{userData.fullName}</h1>
               <p>{userData.username}</p>
               <div className="action-buttons">
-                <button
-                  className="btn edit"
-                  onClick={() => setShowEditModal(true)}
-                >
-                  <FaUserEdit /> Editar Perfil
-                </button>
+
+          
                 <button
                   className="btn password"
                   onClick={() => setShowPasswordModal(true)}
@@ -269,7 +267,7 @@ export const Profile: React.FC = () => {
         <section className="card activities-card">
           <h2>Atividades Recentes ({logs.length})</h2>
           {logs.length === 0 ? (
-            <p className="muted">Nenhuma atividade registrada.</p>
+            <p className="muted">Nada por enquanto...</p>
           ) : (
             <>
               <ul className="activity-list">
@@ -301,3 +299,10 @@ export const Profile: React.FC = () => {
     </div>
   );
 };
+
+/* Botão de Editar excluído
+
+  <button className="btn edit" onClick={() => setShowEditModal(true)}><FaUserEdit /> Editar Perfil
+  </button>
+
+*/

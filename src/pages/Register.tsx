@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './Register.css'; 
 import api from '../services/api';
 
+// Página de Criar conta
+
 export function Register() {
     const [fullName, setFullName] = useState('');
     const [username, setUsername] = useState('');
